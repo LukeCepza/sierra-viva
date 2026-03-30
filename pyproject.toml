@@ -1,0 +1,41 @@
+[project]
+name = "sierra-viva"
+version = "0.1.0"
+description = "Open platform that protects and connects the Monterrey climbing community — satellite environmental monitoring, community tools, and local ecosystem."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "sqlalchemy[asyncio]>=2.0",
+    "geoalchemy2>=0.17",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "httpx>=0.28",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.18",
+    "shapely>=2.0",
+    "geojson>=3.0",
+    "apscheduler>=3.10",
+    "folium>=0.18",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

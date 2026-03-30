@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SierraViva — Monterrey Climbing Community</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+        #header {
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        #header h1 span { color: #4ade80; }
+        #header .subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        #map { height: calc(100vh - 56px); width: 100%; }
+
+        .legend {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 13px;
+            line-height: 2;
+        }
+        .legend h4 { margin-bottom: 4px; font-size: 14px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .popup-content h3 { margin-bottom: 4px; font-size: 15px; }
+        .popup-content .type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .popup-content .type-badge.crag { background: #3b82f6; }
+        .popup-content .type-badge.gym { background: #8b5cf6; }
+        .popup-content .type-badge.cafe { background: #f59e0b; }
+        .popup-content .type-badge.fire_alert { background: #ef4444; }
+        .popup-content p { font-size: 13px; color: #555; margin: 2px 0; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div>
+            <h1>Sierra<span>Viva</span></h1>
+            <div class="subtitle">La sierra esta viva. Protejamosla juntos.</div>
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Center on Monterrey
+        const map = L.map('map').setView([25.67, -100.31], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors | SierraViva',
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Color/icon config per type
+        const typeConfig = {
+            crag:       { color: '#3b82f6', emoji: '🧗', label: 'Zona de escalada' },
+            gym:        { color: '#8b5cf6', emoji: '🏋️', label: 'Gimnasio' },
+            cafe:       { color: '#f59e0b', emoji: '☕', label: 'Cafe' },
+            fire_alert: { color: '#ef4444', emoji: '🔥', label: 'Alerta de incendio' },
+        };
+
+        function makeIcon(type) {
+            const cfg = typeConfig[type] || typeConfig.crag;
+            return L.divIcon({
+                html: `<div style="
+                    background: ${cfg.color};
+                    width: 28px; height: 28px;
+                    border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 14px;
+                    border: 2px solid white;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                ">${cfg.emoji}</div>`,
+                className: '',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                popupAnchor: [0, -16],
+            });
+        }
+
+        function makePopup(props) {
+            const type = props.type || 'crag';
+            const cfg = typeConfig[type] || typeConfig.crag;
+            let html = `<div class="popup-content">`;
+            html += `<span class="type-badge ${type}">${cfg.label}</span>`;
+            html += `<h3>${props.name || 'Alerta'}</h3>`;
+
+            if (props.description) html += `<p>${props.description}</p>`;
+            if (props.access_status) html += `<p><strong>Acceso:</strong> ${props.access_status}</p>`;
+            if (props.season) html += `<p><strong>Temporada:</strong> ${props.season}</p>`;
+            if (props.approach_notes) html += `<p><strong>Aproximacion:</strong> ${props.approach_notes}</p>`;
+            if (props.hours) html += `<p><strong>Horario:</strong> ${props.hours}</p>`;
+            if (props.wall_types) html += `<p><strong>Muros:</strong> ${props.wall_types}</p>`;
+            if (props.website) html += `<p><a href="${props.website}" target="_blank">Sitio web</a></p>`;
+            if (props.brew_methods) html += `<p><strong>Metodos:</strong> ${props.brew_methods}</p>`;
+            if (props.detected_at) html += `<p><strong>Detectado:</strong> ${props.detected_at}</p>`;
+            if (props.confidence) html += `<p><strong>Confianza:</strong> ${props.confidence}</p>`;
+            if (props.distance_km) html += `<p><strong>Distancia al crag:</strong> ${props.distance_km} km</p>`;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function addGeoJSONLayer(geojson) {
+            if (!geojson.features) return;
+            geojson.features.forEach(f => {
+                const [lng, lat] = f.geometry.coordinates;
+                const type = f.properties.type || 'crag';
+                L.marker([lat, lng], { icon: makeIcon(type) })
+                    .bindPopup(makePopup(f.properties))
+                    .addTo(map);
+            });
+        }
+
+        // Fetch all data layers
+        async function loadData() {
+            const endpoints = ['/api/crags', '/api/gyms', '/api/cafes', '/api/alerts'];
+            for (const url of endpoints) {
+                try {
+                    const resp = await fetch(url);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        addGeoJSONLayer(data);
+                    }
+                } catch (e) {
+                    console.warn(`Failed to load ${url}:`, e);
+                }
+            }
+        }
+
+        loadData();
+
+        // Legend
+        const legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function() {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = '<h4>SierraViva</h4>';
+            for (const [type, cfg] of Object.entries(typeConfig)) {
+                div.innerHTML += `<div class="legend-item">
+                    <span class="legend-dot" style="background:${cfg.color}"></span>
+                    ${cfg.label}
+                </div>`;
+            }
+            return div;
+        };
+        legend.addTo(map);
+    </script>
+</body>
+</html>

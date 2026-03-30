@@ -1,0 +1,102 @@
+{
+  "crags": [
+    {
+      "name": "La Huasteca",
+      "lat": 25.6400,
+      "lng": -100.4550,
+      "description": "Parque La Huasteca en Santa Catarina. Cientos de rutas de escalada deportiva en roca caliza con impresionantes formaciones geologicas.",
+      "approach_notes": "Acceso por la carretera a Saltillo, entrada al Parque La Huasteca. Varias zonas de estacionamiento segun el sector.",
+      "access_status": "open",
+      "season": "Oct-Abr (evitar meses calurosos)",
+      "monitoring_radius_km": 15.0
+    },
+    {
+      "name": "Potrero Chico",
+      "lat": 25.9561,
+      "lng": -100.5464,
+      "description": "Destino de escalada de clase mundial en Hidalgo, NL. Mas de 600 rutas incluyendo multi-largos emblematicos como Time Wave Zero y Sendero Luminoso.",
+      "approach_notes": "Pueblo de Hidalgo, NL. ~45 min desde Monterrey por la carretera a Monclova. Camping disponible en la entrada.",
+      "access_status": "open",
+      "season": "Oct-Mar (temporada ideal)",
+      "monitoring_radius_km": 10.0
+    },
+    {
+      "name": "El Salto (Cienega de Gonzalez)",
+      "lat": 25.3680,
+      "lng": -100.1850,
+      "description": "Zona de escalada en el municipio de Santiago, NL. Roca caliza con buenas rutas deportivas en un entorno boscoso.",
+      "approach_notes": "Rumbo a Cola de Caballo / Cienega de Gonzalez en Santiago. Acceso puede requerir pago de entrada al parque.",
+      "access_status": "open",
+      "season": "Oct-Abr",
+      "monitoring_radius_km": 8.0
+    },
+    {
+      "name": "Canon de la Boca",
+      "lat": 25.4200,
+      "lng": -100.1100,
+      "description": "Zona de escalada y senderismo en Santiago, NL. Sectores de boulder y rutas cortas con vista a la presa.",
+      "approach_notes": "Carretera a Presa de la Boca, Santiago. Estacionamiento cercano a los sectores.",
+      "access_status": "open",
+      "season": "Oct-Abr",
+      "monitoring_radius_km": 5.0
+    }
+  ],
+  "gyms": [
+    {
+      "name": "Pico Norte",
+      "lat": 25.6510,
+      "lng": -100.3395,
+      "hours": "Lun-Vie 6:00-22:00, Sab 8:00-20:00, Dom 9:00-18:00",
+      "wall_types": "boulder, lead, top-rope",
+      "website": "https://piconorte.mx/",
+      "membership_info": "Pase de dia y membresias mensuales disponibles."
+    },
+    {
+      "name": "Adamanta",
+      "lat": 25.6590,
+      "lng": -100.3690,
+      "hours": "Lun-Vie 6:00-22:00, Sab 9:00-20:00, Dom 9:00-18:00",
+      "wall_types": "boulder, lead",
+      "website": "https://www.adamanta.mx/",
+      "membership_info": "Pase de dia y membresias mensuales disponibles."
+    }
+  ],
+  "cafes": [
+    {
+      "name": "Cafe Tulum",
+      "lat": 25.6700,
+      "lng": -100.3100,
+      "hours": "Lun-Dom 7:00-22:00",
+      "brew_methods": "espresso, pour-over, cold brew",
+      "specialty": true,
+      "near_crag_id": null
+    },
+    {
+      "name": "Almanegra Cafe",
+      "lat": 25.6632,
+      "lng": -100.3530,
+      "hours": "Lun-Sab 7:30-21:00, Dom 8:00-18:00",
+      "brew_methods": "espresso, chemex, aeropress",
+      "specialty": true,
+      "near_crag_id": null
+    },
+    {
+      "name": "Cafe Itte",
+      "lat": 25.6716,
+      "lng": -100.3090,
+      "hours": "Lun-Dom 8:00-20:00",
+      "brew_methods": "espresso, V60, cold brew",
+      "specialty": true,
+      "near_crag_id": null
+    },
+    {
+      "name": "Cafe Bola de Oro",
+      "lat": 25.6677,
+      "lng": -100.3106,
+      "hours": "Lun-Sab 7:00-21:00, Dom 8:00-20:00",
+      "brew_methods": "espresso, drip, cold brew",
+      "specialty": true,
+      "near_crag_id": null
+    }
+  ]
+}
