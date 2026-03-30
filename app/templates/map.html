@@ -77,10 +77,29 @@
         // Center on Monterrey
         const map = L.map('map').setView([25.67, -100.31], 10);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors | SierraViva',
             maxZoom: 18,
-        }).addTo(map);
+        });
+
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri, Maxar, Earthstar Geographics | SierraViva',
+            maxZoom: 18,
+        });
+
+        const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenTopoMap contributors | SierraViva',
+            maxZoom: 17,
+        });
+
+        // Default to satellite
+        satelliteLayer.addTo(map);
+
+        L.control.layers({
+            'Satelite': satelliteLayer,
+            'Calles': streetLayer,
+            'Topografico': topoLayer,
+        }, {}, { position: 'topright' }).addTo(map);
 
         // Color/icon config per type
         const typeConfig = {
@@ -114,7 +133,11 @@
             const cfg = typeConfig[type] || typeConfig.crag;
             let html = `<div class="popup-content">`;
             html += `<span class="type-badge ${type}">${cfg.label}</span>`;
-            html += `<h3>${props.name || 'Alerta'}</h3>`;
+            if (type === 'crag') {
+                html += `<h3><a href="/crag/${props.id}" style="color:#1e293b">${props.name}</a></h3>`;
+            } else {
+                html += `<h3>${props.name || 'Alerta'}</h3>`;
+            }
 
             if (props.description) html += `<p>${props.description}</p>`;
             if (props.access_status) html += `<p><strong>Acceso:</strong> ${props.access_status}</p>`;
@@ -127,6 +150,10 @@
             if (props.detected_at) html += `<p><strong>Detectado:</strong> ${props.detected_at}</p>`;
             if (props.confidence) html += `<p><strong>Confianza:</strong> ${props.confidence}</p>`;
             if (props.distance_km) html += `<p><strong>Distancia al crag:</strong> ${props.distance_km} km</p>`;
+
+            if (type === 'crag') {
+                html += `<p style="margin-top:8px"><a href="/crag/${props.id}" style="color:#3b82f6;font-weight:600">🛰️ Ver monitoreo ambiental →</a></p>`;
+            }
 
             html += `</div>`;
             return html;

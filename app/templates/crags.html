@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonas de Escalada — SierraViva</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; }
+
+        #header {
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        #header a { color: #4ade80; text-decoration: none; font-weight: 700; font-size: 1.2rem; }
+        #header h1 { font-size: 1.2rem; font-weight: 600; }
+        #header .back { color: #94a3b8; font-size: 0.9rem; text-decoration: none; }
+        #header .back:hover { color: white; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .crag-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.2s;
+        }
+        .crag-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+        .crag-info h2 { font-size: 1.1rem; margin-bottom: 4px; }
+        .crag-info h2 a { color: #1e293b; text-decoration: none; }
+        .crag-info h2 a:hover { color: #3b82f6; }
+        .crag-info p { font-size: 0.85rem; color: #64748b; margin: 2px 0; }
+
+        .crag-stats {
+            display: flex;
+            gap: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .crag-stat .number { font-size: 1.3rem; font-weight: 700; }
+        .crag-stat .label { font-size: 0.75rem; color: #64748b; }
+        .crag-stat.fire .number { color: #ef4444; }
+        .crag-stat.ok .number { color: #22c55e; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+        .status-badge.open { background: #22c55e; }
+        .status-badge.restricted { background: #f59e0b; }
+        .status-badge.closed { background: #ef4444; }
+
+        nav { margin-bottom: 20px; display: flex; gap: 12px; }
+        nav a {
+            padding: 8px 16px;
+            background: white;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        nav a:hover { background: #e2e8f0; }
+        nav a.active { background: #1a1a2e; color: white; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <a href="/">SierraViva</a>
+        <a href="/" class="back">← Mapa</a>
+        <h1>Zonas de Escalada</h1>
+    </div>
+
+    <div class="container">
+        <nav>
+            <a href="/" >Mapa</a>
+            <a href="/crags" class="active">Zonas</a>
+        </nav>
+
+        {% for item in crags %}
+        <div class="crag-card">
+            <div class="crag-info">
+                <h2><a href="/crag/{{ item.crag.id }}">{{ item.crag.name }}</a></h2>
+                <p>
+                    <span class="status-badge {{ item.crag.access_status }}">{{ item.crag.access_status }}</span>
+                    {% if item.crag.season %} · {{ item.crag.season }}{% endif %}
+                    · Radio: {{ item.crag.monitoring_radius_km }} km
+                </p>
+                {% if item.crag.description %}
+                <p style="margin-top: 4px; color: #475569;">{{ item.crag.description[:120] }}{% if item.crag.description|length > 120 %}...{% endif %}</p>
+                {% endif %}
+            </div>
+            <div class="crag-stats">
+                <div class="crag-stat {% if item.alert_count > 0 %}fire{% else %}ok{% endif %}">
+                    <div class="number">{{ item.alert_count }}</div>
+                    <div class="label">alertas</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

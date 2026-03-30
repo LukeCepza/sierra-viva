@@ -22,9 +22,9 @@
     },
     {
       "name": "El Salto (Cienega de Gonzalez)",
-      "lat": 25.3680,
-      "lng": -100.1850,
-      "description": "Zona de escalada en el municipio de Santiago, NL. Roca caliza con buenas rutas deportivas en un entorno boscoso.",
+      "lat": 25.378200,
+      "lng": -100.236962,
+      "description": "Zona de escalada en Santiago, NL. Pueblo de El Salto, puerta de entrada a Cienega de Gonzalez. Multiples canones con roca caliza y rutas deportivas en entorno boscoso.",
       "approach_notes": "Rumbo a Cola de Caballo / Cienega de Gonzalez en Santiago. Acceso puede requerir pago de entrada al parque.",
       "access_status": "open",
       "season": "Oct-Abr",
@@ -32,10 +32,30 @@
     },
     {
       "name": "Canon de la Boca",
-      "lat": 25.4200,
-      "lng": -100.1100,
-      "description": "Zona de escalada y senderismo en Santiago, NL. Sectores de boulder y rutas cortas con vista a la presa.",
-      "approach_notes": "Carretera a Presa de la Boca, Santiago. Estacionamiento cercano a los sectores.",
+      "lat": 25.384448,
+      "lng": -100.234441,
+      "description": "Canon de la Boca, zona principal de escalada en Santiago, NL. Sectores de boulder y rutas deportivas con acceso desde El Salto.",
+      "approach_notes": "Acceso desde El Salto, Santiago. Estacionamiento cercano a los sectores.",
+      "access_status": "open",
+      "season": "Oct-Abr",
+      "monitoring_radius_km": 5.0
+    },
+    {
+      "name": "Canon de las Animas",
+      "lat": 25.394126,
+      "lng": -100.238384,
+      "description": "Canon de las Animas, zona de escalada en Santiago, NL. Canon con rutas deportivas en roca caliza.",
+      "approach_notes": "Acceso desde El Salto, Santiago.",
+      "access_status": "open",
+      "season": "Oct-Abr",
+      "monitoring_radius_km": 5.0
+    },
+    {
+      "name": "La Palma",
+      "lat": 25.390372,
+      "lng": -100.256386,
+      "description": "La Palma, zona de escalada en Santiago, NL. Sector con rutas deportivas en el area de El Salto.",
+      "approach_notes": "Acceso desde El Salto, Santiago.",
       "access_status": "open",
       "season": "Oct-Abr",
       "monitoring_radius_km": 5.0
