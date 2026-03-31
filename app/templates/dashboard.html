@@ -188,6 +188,90 @@
                 <canvas id="timeline-chart" height="80"></canvas>
             </div>
 
+            <!-- Sentinel-2 Vegetation Health -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>🌿 Salud de Vegetacion (Sentinel-2)</h2>
+                <p style="font-size: 0.9rem; color: #475569; margin-bottom: 12px;">
+                    Busca imagenes satelitales Sentinel-2 para analizar la salud de la vegetacion alrededor de {{ crag.name }}.
+                </p>
+                <div style="display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 16px;">
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Fecha inicio</label>
+                        <input type="date" id="s2-start" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Fecha fin</label>
+                        <input type="date" id="s2-end" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Max nubosidad %</label>
+                        <input type="number" id="s2-cloud" value="30" min="0" max="100" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 80px;">
+                    </div>
+                    <button id="s2-search" style="padding: 6px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; height: 36px;">
+                        Buscar imagenes
+                    </button>
+                </div>
+                <div id="s2-results" style="display: none;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
+                                <th style="padding: 6px 8px;">Fecha</th>
+                                <th style="padding: 6px 8px;">Producto</th>
+                                <th style="padding: 6px 8px;">Nubosidad</th>
+                                <th style="padding: 6px 8px;">Tamano</th>
+                                <th style="padding: 6px 8px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="s2-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="s2-empty" class="empty" style="display: none;">No se encontraron imagenes para el rango seleccionado.</div>
+                <div id="s2-loading" style="display: none; color: #64748b; font-size: 0.9rem;">Buscando en el catalogo de Copernicus...</div>
+            </div>
+
+            <!-- Before/After Comparison -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>🔥 Comparacion antes/despues (Sentinel-2)</h2>
+                <p style="font-size: 0.9rem; color: #475569; margin-bottom: 12px;">
+                    Compara imagenes satelitales de dos fechas para visualizar cambios en la vegetacion
+                    (por ejemplo, antes y despues de un incendio).
+                    Se busca la mejor imagen (menor nubosidad) dentro de &plusmn;15 dias de cada fecha seleccionada.
+                </p>
+                <div style="display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 16px;">
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Fecha &ldquo;Antes&rdquo;</label>
+                        <input type="date" id="cmp-before" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Fecha &ldquo;Despues&rdquo;</label>
+                        <input type="date" id="cmp-after" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: #64748b;">Max nubosidad %</label>
+                        <input type="number" id="cmp-cloud" value="30" min="0" max="100" style="display: block; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 80px;">
+                    </div>
+                    <button id="cmp-btn" style="padding: 6px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; height: 36px;">
+                        Comparar
+                    </button>
+                </div>
+                <div id="cmp-loading" style="display: none; color: #64748b; font-size: 0.9rem;">Buscando imagenes para comparacion...</div>
+                <div id="cmp-error" class="empty" style="display: none;"></div>
+                <div id="cmp-display" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <h3 style="text-align: center; margin-bottom: 8px; color: #166534;">ANTES</h3>
+                            <div id="cmp-before-label" style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 6px;"></div>
+                            <img id="cmp-before-img" style="width: 100%; border-radius: 8px; border: 2px solid #22c55e;" alt="Imagen antes">
+                        </div>
+                        <div>
+                            <h3 style="text-align: center; margin-bottom: 8px; color: #dc2626;">DESPUES</h3>
+                            <div id="cmp-after-label" style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 6px;"></div>
+                            <img id="cmp-after-img" style="width: 100%; border-radius: 8px; border: 2px solid #ef4444;" alt="Imagen despues">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Monitoring info -->
             <div class="card">
                 <h2>🛰️ Monitoreo Satelital</h2>
@@ -198,9 +282,11 @@
                 <ul style="margin: 12px 0; padding-left: 20px; font-size: 0.9rem; color: #475569; line-height: 1.8;">
                     <li><strong>NASA FIRMS</strong> — Deteccion de incendios en tiempo casi-real (VIIRS/MODIS)</li>
                     <li><strong>Global Forest Watch</strong> — Alertas de deforestacion integradas</li>
+                    <li><strong>Sentinel-2 (Copernicus)</strong> — Imagenes multiespectrales para analisis de vegetacion (NDVI, NBR)</li>
                 </ul>
                 <div class="monitoring-note">
                     Los datos se actualizan automaticamente cada 6 horas (incendios) y cada 24 horas (deforestacion).
+                    Las imagenes Sentinel-2 se pueden consultar bajo demanda para cualquier rango de fechas.
                 </div>
             </div>
         </div>
@@ -251,6 +337,186 @@
                     );
                 });
             });
+
+        // Sentinel-2 search
+        (function() {
+            const today = new Date();
+            const oneMonthAgo = new Date(today);
+            oneMonthAgo.setMonth(today.getMonth() - 1);
+            document.getElementById('s2-start').value = oneMonthAgo.toISOString().split('T')[0];
+            document.getElementById('s2-end').value = today.toISOString().split('T')[0];
+
+            document.getElementById('s2-search').addEventListener('click', async () => {
+                const start = document.getElementById('s2-start').value;
+                const end = document.getElementById('s2-end').value;
+                const cloud = document.getElementById('s2-cloud').value;
+                if (!start || !end) return;
+
+                document.getElementById('s2-loading').style.display = 'block';
+                document.getElementById('s2-results').style.display = 'none';
+                document.getElementById('s2-empty').style.display = 'none';
+
+                try {
+                    const resp = await fetch(`/api/vegetation/search/{{ crag.id }}?start_date=${start}&end_date=${end}&max_cloud=${cloud}`);
+                    const data = await resp.json();
+                    document.getElementById('s2-loading').style.display = 'none';
+
+                    if (!data.products || data.products.length === 0) {
+                        document.getElementById('s2-empty').style.display = 'block';
+                        return;
+                    }
+
+                    const tbody = document.getElementById('s2-tbody');
+                    tbody.innerHTML = '';
+                    data.products.forEach(p => {
+                        const date = new Date(p.date).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' });
+                        const cloud = p.cloud_cover !== null ? p.cloud_cover.toFixed(1) + '%' : 'N/A';
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = '1px solid #f1f5f9';
+                        tr.innerHTML = `
+                            <td style="padding: 6px 8px;">${date}</td>
+                            <td style="padding: 6px 8px; font-size: 0.8rem; color: #64748b;">${p.name}</td>
+                            <td style="padding: 6px 8px;">${cloud}</td>
+                            <td style="padding: 6px 8px;">${p.size_mb} MB</td>
+                            <td style="padding: 6px 8px;">
+                                <a href="#" class="s2-preview-link" data-id="${p.id}" style="color: #2563eb; font-size: 0.8rem; text-decoration: none;">Vista previa</a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // Preview click handlers
+                    document.querySelectorAll('.s2-preview-link').forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const productId = e.target.dataset.id;
+                            let preview = document.getElementById('s2-preview');
+                            if (!preview) {
+                                preview = document.createElement('div');
+                                preview.id = 's2-preview';
+                                preview.style.cssText = 'margin-top: 12px; text-align: center;';
+                                document.getElementById('s2-results').after(preview);
+                            }
+                            preview.innerHTML = `
+                                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Cargando vista previa...</p>
+                            `;
+                            const img = new Image();
+                            img.onload = () => {
+                                preview.innerHTML = `
+                                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Vista previa satelital (Sentinel-2)</p>
+                                    <img src="/api/vegetation/quicklook/${productId}" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" alt="Sentinel-2 quicklook">
+                                `;
+                            };
+                            img.onerror = () => {
+                                preview.innerHTML = '<p class="empty">Vista previa no disponible para este producto.</p>';
+                            };
+                            img.src = `/api/vegetation/quicklook/${productId}`;
+                        });
+                    });
+
+                    document.getElementById('s2-results').style.display = 'block';
+                } catch (err) {
+                    document.getElementById('s2-loading').style.display = 'none';
+                    document.getElementById('s2-empty').textContent = 'Error al buscar imagenes: ' + err.message;
+                    document.getElementById('s2-empty').style.display = 'block';
+                }
+            });
+        })();
+
+        // Before/After comparison
+        (function() {
+            document.getElementById('cmp-btn').addEventListener('click', async () => {
+                const beforeDate = document.getElementById('cmp-before').value;
+                const afterDate = document.getElementById('cmp-after').value;
+                const cloud = document.getElementById('cmp-cloud').value;
+
+                if (!beforeDate || !afterDate) {
+                    alert('Selecciona ambas fechas para comparar.');
+                    return;
+                }
+
+                const loading = document.getElementById('cmp-loading');
+                const display = document.getElementById('cmp-display');
+                const error = document.getElementById('cmp-error');
+
+                loading.style.display = 'block';
+                display.style.display = 'none';
+                error.style.display = 'none';
+
+                // Build date ranges: selected date +/- 15 days
+                function dateOffset(dateStr, days) {
+                    const d = new Date(dateStr);
+                    d.setDate(d.getDate() + days);
+                    return d.toISOString().split('T')[0];
+                }
+
+                const beforeStart = dateOffset(beforeDate, -15);
+                const beforeEnd = dateOffset(beforeDate, 15);
+                const afterStart = dateOffset(afterDate, -15);
+                const afterEnd = dateOffset(afterDate, 15);
+
+                try {
+                    const [beforeResp, afterResp] = await Promise.all([
+                        fetch(`/api/vegetation/search/{{ crag.id }}?start_date=${beforeStart}&end_date=${beforeEnd}&max_cloud=${cloud}`),
+                        fetch(`/api/vegetation/search/{{ crag.id }}?start_date=${afterStart}&end_date=${afterEnd}&max_cloud=${cloud}`),
+                    ]);
+
+                    const beforeData = await beforeResp.json();
+                    const afterData = await afterResp.json();
+                    loading.style.display = 'none';
+
+                    // Pick best (lowest cloud cover) from each
+                    function pickBest(data) {
+                        if (!data.products || data.products.length === 0) return null;
+                        return data.products.reduce((best, p) => {
+                            const cc = p.cloud_cover !== null ? p.cloud_cover : 100;
+                            const bestCc = best.cloud_cover !== null ? best.cloud_cover : 100;
+                            return cc < bestCc ? p : best;
+                        });
+                    }
+
+                    const bestBefore = pickBest(beforeData);
+                    const bestAfter = pickBest(afterData);
+
+                    if (!bestBefore && !bestAfter) {
+                        error.textContent = 'No se encontraron imagenes para ninguna de las dos fechas. Intenta aumentar el limite de nubosidad.';
+                        error.style.display = 'block';
+                        return;
+                    }
+                    if (!bestBefore) {
+                        error.textContent = 'No se encontro imagen para la fecha "Antes". Intenta otra fecha o aumenta el limite de nubosidad.';
+                        error.style.display = 'block';
+                        return;
+                    }
+                    if (!bestAfter) {
+                        error.textContent = 'No se encontro imagen para la fecha "Despues". Intenta otra fecha o aumenta el limite de nubosidad.';
+                        error.style.display = 'block';
+                        return;
+                    }
+
+                    function formatLabel(product) {
+                        const date = new Date(product.date).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+                        const cc = product.cloud_cover !== null ? product.cloud_cover.toFixed(1) + '% nubosidad' : 'nubosidad N/A';
+                        return `${date} — ${cc}`;
+                    }
+
+                    document.getElementById('cmp-before-label').textContent = formatLabel(bestBefore);
+                    document.getElementById('cmp-after-label').textContent = formatLabel(bestAfter);
+
+                    // Load images
+                    const beforeImg = document.getElementById('cmp-before-img');
+                    const afterImg = document.getElementById('cmp-after-img');
+                    beforeImg.src = `/api/vegetation/quicklook/${bestBefore.id}`;
+                    afterImg.src = `/api/vegetation/quicklook/${bestAfter.id}`;
+
+                    display.style.display = 'block';
+                } catch (err) {
+                    loading.style.display = 'none';
+                    error.textContent = 'Error al buscar imagenes: ' + err.message;
+                    error.style.display = 'block';
+                }
+            });
+        })();
 
         // Timeline chart
         fetch('/api/alerts/crag/{{ crag.id }}?limit=5000')

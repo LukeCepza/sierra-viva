@@ -109,11 +109,23 @@
             fire_alert: { color: '#ef4444', emoji: '🔥', label: 'Alerta de incendio' },
         };
 
-        function makeIcon(type) {
+        // Risk color thresholds for crag markers
+        function riskColor(alertCount) {
+            if (alertCount > 50) return '#ef4444';  // red
+            if (alertCount > 10) return '#f97316';   // orange
+            if (alertCount >= 1) return '#eab308';   // yellow
+            return '#22c55e';                         // green
+        }
+
+        // Global alert-count lookup, populated before markers are drawn
+        let alertCountsByCrag = {};
+
+        function makeIcon(type, colorOverride) {
             const cfg = typeConfig[type] || typeConfig.crag;
+            const bg = colorOverride || cfg.color;
             return L.divIcon({
                 html: `<div style="
-                    background: ${cfg.color};
+                    background: ${bg};
                     width: 28px; height: 28px;
                     border-radius: 50%;
                     display: flex; align-items: center; justify-content: center;
@@ -134,7 +146,9 @@
             let html = `<div class="popup-content">`;
             html += `<span class="type-badge ${type}">${cfg.label}</span>`;
             if (type === 'crag') {
-                html += `<h3><a href="/crag/${props.id}" style="color:#1e293b">${props.name}</a></h3>`;
+                const count = alertCountsByCrag[props.id] || 0;
+                const countLabel = count > 0 ? ` — ${count} alerta${count !== 1 ? 's' : ''}` : '';
+                html += `<h3><a href="/crag/${props.id}" style="color:#1e293b">${props.name}${countLabel}</a></h3>`;
             } else {
                 html += `<h3>${props.name || 'Alerta'}</h3>`;
             }
@@ -164,7 +178,12 @@
             geojson.features.forEach(f => {
                 const [lng, lat] = f.geometry.coordinates;
                 const type = f.properties.type || 'crag';
-                L.marker([lat, lng], { icon: makeIcon(type) })
+                let colorOverride = null;
+                if (type === 'crag') {
+                    const count = alertCountsByCrag[f.properties.id] || 0;
+                    colorOverride = riskColor(count);
+                }
+                L.marker([lat, lng], { icon: makeIcon(type, colorOverride) })
                     .bindPopup(makePopup(f.properties))
                     .addTo(map);
             });
@@ -172,6 +191,17 @@
 
         // Fetch all data layers
         async function loadData() {
+            // Load per-crag alert counts first so markers can be color-coded
+            try {
+                const statsResp = await fetch('/api/alerts/stats/by-crag');
+                if (statsResp.ok) {
+                    const statsData = await statsResp.json();
+                    alertCountsByCrag = statsData.counts_by_crag || {};
+                }
+            } catch (e) {
+                console.warn('Failed to load alert stats:', e);
+            }
+
             const endpoints = ['/api/crags', '/api/gyms', '/api/cafes', '/api/alerts'];
             for (const url of endpoints) {
                 try {
@@ -188,7 +218,7 @@
 
         loadData();
 
-        // Legend
+        // Legend — marker types (bottom-right)
         const legend = L.control({ position: 'bottomright' });
         legend.onAdd = function() {
             const div = L.DomUtil.create('div', 'legend');
@@ -202,6 +232,27 @@
             return div;
         };
         legend.addTo(map);
+
+        // Legend — crag risk level (bottom-left)
+        const riskLegend = L.control({ position: 'bottomleft' });
+        riskLegend.onAdd = function() {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = '<h4>Nivel de riesgo</h4>';
+            const levels = [
+                { color: '#22c55e', label: '0 alertas' },
+                { color: '#eab308', label: '1 – 10 alertas' },
+                { color: '#f97316', label: '11 – 50 alertas' },
+                { color: '#ef4444', label: '50+ alertas' },
+            ];
+            levels.forEach(l => {
+                div.innerHTML += `<div class="legend-item">
+                    <span class="legend-dot" style="background:${l.color}"></span>
+                    ${l.label}
+                </div>`;
+            });
+            return div;
+        };
+        riskLegend.addTo(map);
     </script>
 </body>
 </html>

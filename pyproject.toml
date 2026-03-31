@@ -21,6 +21,9 @@ dependencies = [
     "geojson>=3.0",
     "apscheduler>=3.10",
     "folium>=0.18",
+    "rasterio>=1.5.0",
+    "numpy>=2.4.4",
+    "pyproj>=3.7.2",
 ]
 
 [project.optional-dependencies]

@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://sierra:sierra@localhost:5432/sierraviva"
     firms_api_key: str = ""
     gfw_api_key: str = ""
+    cdse_username: str = ""
+    cdse_password: str = ""
     app_env: str = "development"
     app_host: str = "0.0.0.0"
     app_port: int = 8000

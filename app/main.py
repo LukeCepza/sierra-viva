@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
 
-from app.api import alerts, cafes, crags, gyms
+from app.api import alerts, cafes, crags, gyms, vegetation
 from app.config import settings
 from app.database import get_db, async_session
 from app.models.crag import Crag
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="SierraViva",
     description="Open platform that protects and connects the Monterrey climbing community.",
-    version="0.2.0",
+    version="0.3.0",
     lifespan=lifespan,
 )
 
@@ -43,6 +43,7 @@ app.include_router(crags.router)
 app.include_router(gyms.router)
 app.include_router(cafes.router)
 app.include_router(alerts.router)
+app.include_router(vegetation.router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -102,7 +103,7 @@ async def crags_listing(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "version": "0.2.0"}
+    return {"status": "ok", "version": "0.3.0"}
 
 
 if __name__ == "__main__":

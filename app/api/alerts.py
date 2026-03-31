@@ -66,3 +66,15 @@ async def alert_stats(db: AsyncSession = Depends(get_db)):
     stats = {row[0]: row[1] for row in result.all()}
     total = sum(stats.values())
     return {"total": total, "by_type": stats}
+
+
+@router.get("/stats/by-crag")
+async def alert_stats_by_crag(db: AsyncSession = Depends(get_db)):
+    """Return alert counts grouped by crag_id for map risk coloring."""
+    result = await db.execute(
+        select(SatelliteAlert.crag_id, func.count(SatelliteAlert.id)).group_by(
+            SatelliteAlert.crag_id
+        )
+    )
+    counts = {row[0]: row[1] for row in result.all()}
+    return {"counts_by_crag": counts}
